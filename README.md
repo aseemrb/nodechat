@@ -15,7 +15,7 @@
   <li>People are able to join the chat server after entering their names</li>
   <li>Usernames are unique - if a username is taken, a new suggestion is generated</li>
   <li>User agent and geo location are both detected</li>
-  <li>People can setup a room. Room names are unique. One person can create on room and join one room</li>
+  <li>People can setup a room. Room names are unique. One person can create one room and join one room</li>
   <li>Users have to join a room to chat, except for the whisper feature.</li>
   <li>Whisper messages are private messages sent between two users</li>
   <li>Users can leave a room and/or disconnect from the server anytime</li>
