@@ -7,15 +7,27 @@
 // var final_transcript = '';
 // var recognizing = false;
 // var last10messages = []; //to be populated later
+var smlist = [':car:', ':truck:', ':paw:', ':music:', ':bolt:', ':tree:', ':warning:', ':bomb:', ':bug:', ':bell-o:', ':camera:', ':magic:', ':gift:', ':meh-o:', ':smile-o:', ':clock-o:', ':star-o:', ':sun-o:']
+function validlink(text){
+  if(text.indexOf('http://')>-1 || text.indexOf('.com')>-1 || text.indexOf('.co')>-1 ||
+    text.indexOf('.org')>-1 || text.indexOf('.in')>-1 || text.indexOf('.net')>-1 ||
+    text.indexOf('.edu')>-1 || text.indexOf('.gov')>-1 || text.indexOf('.biz')>-1 ||
+    text.indexOf('.mobi')>-1 || text.indexOf('https://')>-1)
+    return true;
+  return false;
+}
 
-// function validlink(text){
-//     if(text.indexOf('http://')>-1 || text.indexOf('.com')>-1 || text.indexOf('.co')>-1 ||
-//             text.indexOf('.org')>-1 || text.indexOf('.in')>-1 || text.indexOf('.net')>-1 ||
-//             text.indexOf('.edu')>-1 || text.indexOf('.gov')>-1 || text.indexOf('.biz')>-1 ||
-//             text.indexOf('.mobi')>-1 || text.indexOf('https://')>-1)
-//         return true;
-//     return false;
-// }
+function smiley(s){
+  if(s==':)' || s==':-)' || s=='=)')return '<i class="fa fa-smile-o"></i>';
+  else if(s==':(' || s==':-(' || s=='=(') return '<i class="fa fa-frown-o"></i>';
+  else if(s==':|') return '<i class="fa fa-meh-o"></i>';
+  else if(s=='<3' || s==':heart:') return '<i class="fa fa-heart-o"></i>';
+  else if(s=='(y)' || s==':like:') return '<i class="fa fa-thumbs-o-up"></i>';
+  else if(s==':dislike:') return '<i class="fa fa-thumbs-o-down"></i>';
+  else if(smlist.indexOf(s)>-1 ) return '<i class="fa fa-'+s.substring(1, s.length-1)+'"></i>';
+  else if(smlist.indexOf(s.substring(0, s.length-1)+'-o:')>-1) return '<i class="fa fa-'+s.substring(1, s.length-1)+'-o"></i>';
+  return s;
+}
 
 // if (!('webkitSpeechRecognition' in window)) {
 //   console.log("webkitSpeechRecognition is not available");
@@ -74,7 +86,7 @@ function toggleChatWindow() {
 
 $(document).ready(function() {
   //setup "global" variables first
-  var socket = io.connect("localhost:3000");    // ip config
+  var socket = io.connect("127.0.0.1:3000");    // ip config
   var myRoomID = null;
 
   $("form").submit(function(event) {
@@ -151,7 +163,7 @@ $(document).ready(function() {
         socket.emit("typing", true);
       } else {
         clearTimeout(timeout);
-        timeout = setTimeout(timeoutFunction, 1000);
+        timeout = setTimeout(timeoutFunction, 3000);
       }
     }
   });
@@ -160,7 +172,7 @@ $(document).ready(function() {
     if (data.isTyping) {
       if ($("#"+data.person+"").length === 0) {
         $("#updates").append("<li id='"+ data.person +"'><span class='text-muted'><i class='fa fa-keyboard-o'></i> " + data.person + " is typing ...</li>");
-        timeout = setTimeout(timeoutFunction, 1000);
+        timeout = setTimeout(timeoutFunction, 3000);
       }
     } else {
       $("#"+data.person+"").remove();
@@ -204,7 +216,7 @@ $(document).ready(function() {
           $("#errors").empty();
           $("#errors").show();
           $("#errors").append("Room <i>" + roomName + "</i> already exists");
-        } else {      
+        } else {
         if (roomName.length > 0) { //also check for roomname
           socket.emit("createRoom", roomName);
           $("#errors").empty();
@@ -331,7 +343,15 @@ socket.on("history", function(data) {
       var msgwords = msg.split(' ');
       msg = "";
       msgwords.forEach(function(text){
-          if(validlink(text)) text = '<a style="text-decoration:underline;" target="_blank" href="'+text+'">'+text+'</a>'
+          if(validlink(text))
+          {
+            if(text.indexOf('http://')>-1)
+              text = '<a style="text-decoration:underline;" target="_blank" href="'+text+'">'+text+'</a>';
+            else
+              text = '<a style="text-decoration:underline;" target="_blank" href="http://'+text+'">'+text+'</a>';
+
+          }
+          text = smiley(text);
           msg += text+' ';
       });
       $("#msgs").append("<li>" + msg + "</li>");
@@ -363,7 +383,14 @@ socket.on("history", function(data) {
     var msgwords = msg.split(' ');
     msg = "";
     msgwords.forEach(function(text){
-        if(validlink(text)) text = '<a style="text-decoration:underline;" target="_blank" href="'+text+'">'+text+'</a>'
+        if(validlink(text))
+        {
+          if(text.indexOf('http://')>-1)
+            text = '<a style="text-decoration:underline;" target="_blank" href="'+text+'">'+text+'</a>';
+          else
+            text = '<a style="text-decoration:underline;" target="_blank" href="http://'+text+'">'+text+'</a>';
+        }
+        text = smiley(text);
         msg += text+' ';
     });
     $("#msgs").append("<li><strong><span class='text-success'>" + person.name + "</span></strong>: " + msg + "</li>");
@@ -390,7 +417,7 @@ socket.on("history", function(data) {
      if (!jQuery.isEmptyObject(data.rooms)) { 
       $.each(data.rooms, function(id, room) {
         var html = "<button id="+id+" class='joinRoomBtn btn btn-default btn-xs' >Join</button>" + " " + "<button id="+id+" class='removeRoomBtn btn btn-default btn-xs'>Remove</button>";
-        $('#rooms').append("<li id="+id+" class=\"list-group-item\"><i class='fa fa-weixin'></i> <strong>#" + room.name + "</strong> " + html + "</li>");
+        $('#rooms').append("<li id="+id+" class=\"list-group-item\"><i class='fa fa-weixin'></i> <strong> " + room.name + "</strong> " + html + "</li>");
       });
     } else {
       $("#rooms").append("<li class=\"list-group-item\">There are no rooms yet &nbsp;&nbsp;&nbsp;<img src='css/alone.jpg'></li>");

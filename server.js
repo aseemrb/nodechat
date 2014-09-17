@@ -7,9 +7,9 @@ var express = require('express')
 , _ = require('underscore')._;
 
 app.configure(function() {
-	app.set('port', 8000);
+	app.set('port', 3000);
 	// app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 3000);
-  	app.set('ipaddr', "localhost");
+  	app.set('ipaddr', "127.0.0.1");
   	// app.set('ipaddr', process.env.OPENSHIFT_NODEJS_IP || "192.168.1.121");
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
@@ -178,6 +178,13 @@ function purge(s, action) {
 io.sockets.on("connection", function (socket) {
 
 	socket.on("joinserver", function(name, device) {
+		for(var i=0;i<name.length;i++)
+		{
+			if(name[i]=='<')
+				name = name.substring(0, i)+'&lt;'+name.substring(i+1);
+			else if(name[i]=='>')
+				name = name.substring(0, i)+'&gt;'+name.substring(i+1);
+		}
 		var exists = false;
 		var ownerRoomID = inRoomID = null;
 
@@ -209,8 +216,8 @@ io.sockets.on("connection", function (socket) {
 	});
 
 	socket.on("getOnlinePeople", function(fn) {
-                fn({people: people});
-        });
+        fn({people: people});
+    });
 
 	socket.on("countryUpdate", function(data) { //we know which country the user is from
 		country = data.country.toLowerCase();
@@ -226,6 +233,13 @@ io.sockets.on("connection", function (socket) {
 	socket.on("send", function(msg) {
 		//process.exit(1);
 		var re = /^[w]:.*:/;
+		for(var i=0;i<msg.length;i++)
+		{
+			if(msg[i]=='<')
+				msg = msg.substring(0, i)+'&lt;'+msg.substring(i+1);
+			else if(msg[i]=='>')
+				msg = msg.substring(0, i)+'&gt;'+msg.substring(i+1);
+		}
 		var whisper = re.test(msg);
 		var whisperStr = msg.split(":");
 		var found = false;
@@ -277,6 +291,13 @@ io.sockets.on("connection", function (socket) {
 
 	//Room functions
 	socket.on("createRoom", function(name) {
+		for(var i=0;i<name.length;i++)
+		{
+			if(name[i]=='<')
+				name = name.substring(0, i)+'&lt;'+name.substring(i+1);
+			else if(name[i]=='>')
+				name = name.substring(0, i)+'&gt;'+name.substring(i+1);
+		}
 		if (people[socket.id].inroom) {
 			socket.emit("update", "You are in a room. Please leave it first to create your own.");
 		} else if (!people[socket.id].owns) {

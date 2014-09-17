@@ -14,16 +14,16 @@
       <p class="lead">IITJ Chat Server</p>
       <h4>The only place in IITJ where males and females can be in the same room at any hour</h4>
       <h4>Enter your name below and click the Join button or hit the 'Enter' key.</h4><br>
-        <form class="form-inline" id="nameForm">
-          <div class="form-group">
-            <input required type="text" autocomplete="off" class="form-control input-lg" placeholder="Your name" id="name">
-          </div>
-          <input type="submit" name="join" id="join" value="Join Chat" class="btn btn-success btn-lg">
-        </form>
-      </div>
+      <form class="form-inline" id="nameForm">
+        <div class="form-group">
+          <input required type="text" autocomplete="off" class="form-control input-lg" placeholder="Your name" id="name">
+        </div>
+        <input type="submit" name="join" id="join" value="Join Chat" class="btn btn-success btn-lg">
+      </form>
     </div>
-
-    <div class="row" id="main-chat-screen">
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid" id="main-chat-screen">
       <div class="col-xs-3">
         <ul id="rooms" class="list-group"></ul>
         <ul id="people" class="list-group"></ul>
@@ -49,12 +49,11 @@
           </div>
         </form>
       </div>
-       <div class="col-xs-2">
+      <div class="col-xs-2">
         <ul class="list-unstyled" id="updates"></ul>
       </div>
     </div>
   </div>
-
   <!-- Modal start -->
   <div class="modal fade" id="roomModal" tabindex="-1" role="dialog" aria-labelledby="createRoomLabel" aria-hidden="true">
     <div class="modal-dialog">

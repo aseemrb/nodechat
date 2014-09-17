@@ -6,7 +6,7 @@
   text-align: center;
 }
 #conversation {
-  font-size: 18px;
+  font-size: 16px;
   margin: 0px;
   height: 500px;
   width:100%;
@@ -19,5 +19,6 @@
 .interim {
   font-color: #f00;
 }
-#msgs li{padding:5px 0px 0px 10px;}
-#msgs li:nth-child(odd){background:#efefef;}
+#msgs li{padding:3px 0px 0px 8px;}
+#msgs li:nth-child(odd){background:#eeeeee;}
+#msgs li:nth-child(even){background:#dedede;}
